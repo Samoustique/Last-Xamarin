@@ -1,9 +1,6 @@
-﻿using System;
-using Xamarin.Forms;
+﻿using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 using Last.Core.ViewModels;
-using System.IO;
-using Last.Core.Services;
 
 namespace Last.Core.Views
 {
@@ -35,15 +32,6 @@ namespace Last.Core.Views
 
             if ((BindingContext as ItemsViewModel).Items.Count == 0)
                 (BindingContext as ItemsViewModel).LoadItemsCommand.Execute(null);
-        }
-
-        private async void OnOpenClicked(object sender, EventArgs args)
-        {
-            if(sender is Button button)
-            {
-                var viewModel = new ItemDetailViewModel((button.BindingContext as ItemListViewModel).Item);
-                await Navigation.PushAsync(new ItemDetailPage(viewModel));
-            }
         }
     }
 }

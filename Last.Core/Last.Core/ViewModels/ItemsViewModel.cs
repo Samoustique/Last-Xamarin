@@ -26,18 +26,22 @@ namespace Last.Core.ViewModels
             Title = "Last";
             Items = new ObservableCollection<ItemListViewModel>();
             LoadItemsCommand = new Command(async () => await ExecuteLoadItemsCommand());
-            AddItemCommand = new Command(AddItemExecuteAsync);
+            AddItemCommand = new Command(AddItemExecute);
 
-            MessagingCenter.Subscribe<NewItemViewModel>(this, "Refresh", async (obj) =>
+            MessagingCenter.Subscribe<ItemDetailViewModel, Item>(this, "Save", async (obj, item) =>
             {
+                // Save
+                await DataStore.AddItemAsync(item);
+
+                // Refresh the list
                 LoadItemsCommand.Execute(null);
             });
         }
 
-        private async void AddItemExecuteAsync()
+        private async void AddItemExecute()
         {
-            var viewModel = new NewItemViewModel(DataStore);
-            await Navigation.PushModalAsync(new NavigationPage(new NewItemPage(viewModel)));
+            var viewModel = new ItemDetailViewModel();
+            await Navigation.PushAsync(new ItemDetailPage(viewModel));
         }
 
         async Task ExecuteLoadItemsCommand()
@@ -53,7 +57,7 @@ namespace Last.Core.ViewModels
                 var items = await DataStore.GetItemsAsync(true);
                 foreach (var item in items.OrderByDescending(x => x.LastModificationDate))
                 {
-                    var itemListViewModel = new ItemListViewModel(item);
+                    var itemListViewModel = new ItemListViewModel(item, Navigation);
                     itemListViewModel.CountChanged += OnCountChanged;
                     Items.Add(itemListViewModel);
                 }

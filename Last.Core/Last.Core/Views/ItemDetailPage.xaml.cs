@@ -1,9 +1,5 @@
-﻿using System;
-
-using Xamarin.Forms;
+﻿using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
-
-using Last.Core.Models;
 using Last.Core.ViewModels;
 
 namespace Last.Core.Views
@@ -11,10 +7,11 @@ namespace Last.Core.Views
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class ItemDetailPage : ContentPage
     {
-        public ItemDetailPage(ItemDetailViewModel viewModel)
+        public ItemDetailPage(ItemDetailViewModel newItemViewModel)
         {
             InitializeComponent();
-            BindingContext = viewModel;
+            newItemViewModel.Navigation = Navigation;
+            BindingContext = newItemViewModel;
         }
     }
 }
