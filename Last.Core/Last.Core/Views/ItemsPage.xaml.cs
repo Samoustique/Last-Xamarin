@@ -2,6 +2,8 @@
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 using Last.Core.ViewModels;
+using System.IO;
+using Last.Core.Services;
 
 namespace Last.Core.Views
 {

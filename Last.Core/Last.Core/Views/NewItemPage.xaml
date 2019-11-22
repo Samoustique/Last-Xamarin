@@ -16,6 +16,17 @@
             <Entry Text="{Binding Count}" FontSize="Small" />
             <Label Text="Description" FontSize="Medium" />
             <Editor Text="{Binding Description}" FontSize="Small" Margin="0" />
+            <Button
+                Text="Pick Photo"
+                Command="{Binding PickPhotoButtonCommand}" />
+            <Image
+                Aspect="AspectFit"
+                VerticalOptions="End"
+                WidthRequest="60"
+                HeightRequest="60"
+                HorizontalOptions="CenterAndExpand"
+                Source="{Binding Image}">
+            </Image>
         </StackLayout>
     </ContentPage.Content>
 </ContentPage>

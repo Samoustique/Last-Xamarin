@@ -16,11 +16,5 @@ namespace Last.Core.Views
             newItemViewModel.Navigation = Navigation;
             BindingContext = newItemViewModel;
         }
-
-        //async void Save_Clicked(object sender, EventArgs e)
-        //{
-        //    MessagingCenter.Send(this, "AddItem", (BindingContext as NewItemViewModel).Item);
-        //    await Navigation.PopModalAsync();
-        //}
     }
 }
