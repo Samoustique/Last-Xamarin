@@ -18,12 +18,12 @@ namespace Last.Core.ViewModels
         public Command AddItemCommand { get; set; }
         public INavigation Navigation { get; internal set; }
 
-        private IDataStore<Item> DataStore;
+        private Lazy<MockDataStore> Mock = new Lazy<MockDataStore>(() => new MockDataStore());
+        private IDataStore<Item> DataStore => DependencyService.Get<IDataStore<Item>>() ?? Mock.Value;
 
-        public ItemsViewModel(IDataStore<Item> dataStore)
+        public ItemsViewModel()
         {
-            Title = "Browse";
-            DataStore = dataStore;
+            Title = "Last";
             Items = new ObservableCollection<ItemListViewModel>();
             LoadItemsCommand = new Command(async () => await ExecuteLoadItemsCommand());
             AddItemCommand = new Command(AddItemExecuteAsync);

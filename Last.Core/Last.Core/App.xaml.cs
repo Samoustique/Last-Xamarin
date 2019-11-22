@@ -14,9 +14,9 @@ namespace Last.Core
         {
             InitializeComponent();
 
-            MainPageViewModel mainPageViewModel = new MainPageViewModel();
-            MainPage = new MainPage();
-            MainPage.BindingContext = mainPageViewModel;
+            ItemsViewModel itemsViewModel = new ItemsViewModel();
+            MainPage = new NavigationPage(new ItemsPage());
+            MainPage.BindingContext = itemsViewModel;
         }
 
         protected override void OnStart()
