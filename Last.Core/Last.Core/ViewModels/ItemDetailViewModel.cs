@@ -8,6 +8,7 @@ namespace Last.Core.ViewModels
 {
     public class ItemDetailViewModel : BaseViewModel
     {
+        public string ButtonTitle { get; set; }
         public string Text { get; set; }
         public int Count { get; set; }
         public string Description { get; set; }
@@ -34,7 +35,7 @@ namespace Last.Core.ViewModels
 
         private async void SaveExecute()
         {
-            await Navigation.PopModalAsync();
+            await Navigation.PopAsync();
             MessagingCenter.Send(this, "Save", new Item()
             {
                 Id = Guid.NewGuid().ToString(),

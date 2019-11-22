@@ -40,7 +40,10 @@ namespace Last.Core.ViewModels
 
         private async void AddItemExecute()
         {
-            var viewModel = new ItemDetailViewModel();
+            var viewModel = new ItemDetailViewModel()
+            {
+                ButtonTitle = "Save"
+            };
             await Navigation.PushAsync(new ItemDetailPage(viewModel));
         }
 
