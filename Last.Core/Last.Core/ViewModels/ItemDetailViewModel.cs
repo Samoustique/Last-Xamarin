@@ -6,7 +6,7 @@ using Xamarin.Forms;
 
 namespace Last.Core.ViewModels
 {
-    public class ItemDetailViewModel : BaseViewModel
+    public abstract class ItemDetailViewModel : BaseViewModel
     {
         public string ButtonTitle { get; set; }
         public string Text { get; set; }
@@ -22,28 +22,27 @@ namespace Last.Core.ViewModels
         }
 
         public INavigation Navigation { get; internal set; }
-        public Command SaveCommand { get; set; }
+        public Command MainCommand { get; set; }
         public Command PickPhotoButtonCommand { get; set; }
-        
+        public Command DeleteItemCommand { get; set; }
+
         private ImageSource _image;
 
         public ItemDetailViewModel()
         {
-            SaveCommand = new Command(SaveExecute);
             PickPhotoButtonCommand = new Command(PickPhotoButtonExecute);
+            DeleteItemCommand = new Command<Item>(DeleteItemExecute, DeleteItemCanExecute);
         }
 
-        private async void SaveExecute()
+        protected bool DeleteItemCanExecute(Item item)
+        {
+            return item != null;
+        }
+
+        private async void DeleteItemExecute(Item item)
         {
             await Navigation.PopAsync();
-            MessagingCenter.Send(this, "Save", new Item()
-            {
-                Id = Guid.NewGuid().ToString(),
-                Text = this.Text,
-                Count = this.Count,
-                Description = this.Description,
-                LastModificationDate = DateTime.Now
-            });
+            MessagingCenter.Send(this, "Delete", item.Id);
         }
 
         private void PickPhotoButtonExecute()

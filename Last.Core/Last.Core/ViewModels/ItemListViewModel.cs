@@ -34,10 +34,7 @@ namespace Last.Core.ViewModels
 
         private async void OpenItemDetailCommandExecute()
         {
-            var viewModel = new ItemDetailViewModel()
-            {
-                ButtonTitle = "Update"
-            };
+            var viewModel = new UpdateItemViewModel(Item);
             await Navigation.PushAsync(new ItemDetailPage(viewModel));
         }
     }

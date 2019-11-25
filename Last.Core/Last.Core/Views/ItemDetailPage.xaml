@@ -5,7 +5,7 @@
     <ContentPage.ToolbarItems>
         <ToolbarItem
             Text="{Binding ButtonTitle}"
-            Command="{Binding SaveCommand}"/>
+            Command="{Binding MainCommand}"/>
     </ContentPage.ToolbarItems>
     <ContentPage.Content>
         <StackLayout Spacing="20" Padding="15">
@@ -15,6 +15,16 @@
             <Entry Text="{Binding Count}" FontSize="Small" />
             <Label Text="Description" FontSize="Medium" />
             <Editor Text="{Binding Description}" FontSize="Small" Margin="0" />
+            <Button
+                Text="Delete"
+                Command="{Binding DeleteItemCommand}"
+                CommandParameter="{Binding Item, FallbackValue={x:Null}}">
+                <Button.Triggers>
+                    <Trigger TargetType="Button" Property="IsEnabled" Value="False">
+                        <Setter Property="IsVisible" Value="False"/>
+                    </Trigger>
+                </Button.Triggers>
+            </Button>
             <Button
                 Text="Pick Photo"
                 Command="{Binding PickPhotoButtonCommand}" />

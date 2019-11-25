@@ -28,10 +28,28 @@ namespace Last.Core.ViewModels
             LoadItemsCommand = new Command(async () => await ExecuteLoadItemsCommand());
             AddItemCommand = new Command(AddItemExecute);
 
-            MessagingCenter.Subscribe<ItemDetailViewModel, Item>(this, "Save", async (obj, item) =>
+            MessagingCenter.Subscribe<NewItemViewModel, Item>(this, "Save", async (obj, item) =>
             {
                 // Save
                 await DataStore.AddItemAsync(item);
+
+                // Refresh the list
+                LoadItemsCommand.Execute(null);
+            });
+
+            MessagingCenter.Subscribe<UpdateItemViewModel, Item>(this, "Update", async (obj, item) =>
+            {
+                // Update
+                await DataStore.UpdateItemAsync(item);
+
+                // Refresh the list
+                LoadItemsCommand.Execute(null);
+            });
+
+            MessagingCenter.Subscribe<ItemDetailViewModel, string>(this, "Delete", async (obj, id) =>
+            {
+                // Delete
+                await DataStore.DeleteItemAsync(id);
 
                 // Refresh the list
                 LoadItemsCommand.Execute(null);
@@ -40,10 +58,7 @@ namespace Last.Core.ViewModels
 
         private async void AddItemExecute()
         {
-            var viewModel = new ItemDetailViewModel()
-            {
-                ButtonTitle = "Save"
-            };
+            var viewModel = new NewItemViewModel();
             await Navigation.PushAsync(new ItemDetailPage(viewModel));
         }
 
