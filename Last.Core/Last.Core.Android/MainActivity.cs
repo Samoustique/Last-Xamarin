@@ -6,6 +6,7 @@ using System.IO;
 using Android.Content;
 using Xamarin.Forms;
 using Last.Core.Droid.Services;
+using Last.Core.Services;
 
 namespace Last.Core.Droid
 {
@@ -44,6 +45,9 @@ namespace Last.Core.Droid
 
                     // Set the Stream as the completion of the Task
                     PickImageTaskCompletionSource.SetResult(stream);
+                    var test = DependencyService.Get<IPhotoPickerService>();
+                    PhotoPickerService p = test as PhotoPickerService;
+                    p.RaisePhotoPickedSucceeded(stream);
                 }
                 else
                 {
@@ -59,7 +63,7 @@ namespace Last.Core.Droid
                 if ((grantResults.Length == 1) && (grantResults[0] == Permission.Granted))
                 {
                     // Location permission has been granted, okay to retrieve the location of the device.
-                    DependencyService.Get<PhotoPickerService>().RaisePhotoPickedSucceeded();
+                    DependencyService.Get<PhotoPickerService>().PickPhoto();
                 }
                 else
                 {

@@ -25,10 +25,10 @@ namespace Last.Core.Droid.Services
                 ActivityCompat.RequestPermissions(MainActivity.Instance, new String[] { Manifest.Permission.ReadExternalStorage }, MainActivity.PickImageRequestCode);
             }
 
-            RaisePhotoPickedSucceeded();
+            PickPhoto();
         }
 
-        public void RaisePhotoPickedSucceeded()
+        public void PickPhoto()
         {
             if (ContextCompat.CheckSelfPermission(MainActivity.Instance, Manifest.Permission.ReadExternalStorage) == (int)Permission.Granted)
             {
@@ -45,13 +45,19 @@ namespace Last.Core.Droid.Services
                 // Save the TaskCompletionSource object as a MainActivity property
                 MainActivity.Instance.PickImageTaskCompletionSource = new TaskCompletionSource<Stream>();
 
-                // fire the event
-                PhotoPickedSucceeded?.Invoke(MainActivity.Instance.PickImageTaskCompletionSource.Task?.Result);
+                //// fire the event
+                //Stream s = MainActivity.Instance.PickImageTaskCompletionSource.Task.Result;
+                //PhotoPickedSucceeded?.Invoke(s);
             }
             else
             {
-                PhotoPickedSucceeded?.Invoke(null);
+                RaisePhotoPickedSucceeded(null);
             }
+        }
+
+        public void RaisePhotoPickedSucceeded(Stream stream)
+        {
+            PhotoPickedSucceeded?.Invoke(stream);
         }
 
         public void RaisePhotoPickedFailed()
