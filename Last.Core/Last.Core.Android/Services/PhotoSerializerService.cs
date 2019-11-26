@@ -11,12 +11,11 @@ namespace Last.Core.Droid.Services
 {
     public class PhotoSerializerService : IPhotoSerializerService
     {
-        public void SavePicture(string name, MemoryStream data, string location = "temp")
+        public string SavePicture(string name, MemoryStream data, string location = "temp")
         {
             var documentsPath = Environment.GetFolderPath(Environment.SpecialFolder.Personal);
             documentsPath = Path.Combine(documentsPath, "Last", location);
             Directory.CreateDirectory(documentsPath);
-
             string filePath = Path.Combine(documentsPath, name);
 
             byte[] bArray = new byte[data.Length];
@@ -27,6 +26,8 @@ namespace Last.Core.Droid.Services
                 fs.Write(bArray, 0, length);
             }
             data.Position = 0;
+
+            return filePath;
         }
     }
 }

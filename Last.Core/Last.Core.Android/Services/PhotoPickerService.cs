@@ -14,7 +14,7 @@ namespace Last.Core.Droid.Services
 {
     public class PhotoPickerService : IPhotoPickerService
     {
-        public event Action<Stream> PhotoPickedSucceeded;
+        public event Action<Stream, string> PhotoPickedSucceeded;
         public event Action PhotoPickedFailed;
 
         public void GetImageStreamAsync()
@@ -43,13 +43,13 @@ namespace Last.Core.Droid.Services
             }
             else
             {
-                RaisePhotoPickedSucceeded(null);
+                RaisePhotoPickedSucceeded();
             }
         }
 
-        public void RaisePhotoPickedSucceeded(Stream stream)
+        public void RaisePhotoPickedSucceeded(Stream stream = null, string filename = null)
         {
-            PhotoPickedSucceeded?.Invoke(stream);
+            PhotoPickedSucceeded?.Invoke(stream, filename);
         }
 
         public void RaisePhotoPickedFailed()

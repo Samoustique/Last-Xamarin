@@ -11,6 +11,7 @@ namespace Last.Core.ViewModels
         public string Text { get; set; }
         public int Count { get; set; }
         public string Description { get; set; }
+        public string ImagePath { get; set; }
         public ImageSource Image
         {
             get { return this._image; }
@@ -52,13 +53,13 @@ namespace Last.Core.ViewModels
             photoPickerService.GetImageStreamAsync();
         }
 
-        private void OnPhotoPickedSucceeded(Stream stream)
+        private void OnPhotoPickedSucceeded(Stream stream, string filename)
         {
             UnsubscribePhotoPicker();
             if (stream != null)
             {
                 MemoryStream ms = CopyStreamToMemory(stream);
-                DependencyService.Get<IPhotoSerializerService>().SavePicture($"test.jpg", ms, "imagesFolder");
+                ImagePath = DependencyService.Get<IPhotoSerializerService>().SavePicture(filename, ms, "imagesFolder");
                 Image = ImageSource.FromStream(() => ms);
             }
         }

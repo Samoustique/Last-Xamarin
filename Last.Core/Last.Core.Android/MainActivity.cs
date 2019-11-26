@@ -6,6 +6,7 @@ using Android.Content;
 using Xamarin.Forms;
 using Last.Core.Droid.Services;
 using Last.Core.Services;
+using static Android.Provider.MediaStore.Images;
 
 namespace Last.Core.Droid
 {
@@ -41,14 +42,43 @@ namespace Last.Core.Droid
                 if ((resultCode == Result.Ok) && (intent != null))
                 {
                     Android.Net.Uri uri = intent.Data;
+                    var filename = GetFileName(uri);
                     Stream stream = ContentResolver.OpenInputStream(uri);
-                    service.RaisePhotoPickedSucceeded(stream);
+
+                    service.RaisePhotoPickedSucceeded(stream, filename);
                 }
                 else
                 {
-                    service.RaisePhotoPickedSucceeded(null);
+                    service.RaisePhotoPickedSucceeded();
                 }
             }
+        }
+
+        private string GetFileName(Android.Net.Uri uri)
+        {
+            string doc_id = "";
+            using (var c1 = ContentResolver.Query(uri, null, null, null, null))
+            {
+                c1.MoveToFirst();
+                string document_id = c1.GetString(0);
+                doc_id = document_id.Substring(document_id.LastIndexOf(":") + 1);
+            }
+
+            string path = null;
+
+            // The projection contains the columns we want to return in our query.
+            string selection = Media.InterfaceConsts.Id + " =? ";
+            using (var cursor = ManagedQuery(Media.ExternalContentUri, null, selection, new string[] { doc_id }, null))
+            {
+                if (cursor != null)
+                {
+                    var columnIndex = cursor.GetColumnIndexOrThrow(Android.Provider.MediaStore.Images.Media.InterfaceConsts.Data);
+                    cursor.MoveToFirst();
+                    path = cursor.GetString(columnIndex);
+                }
+            }
+
+            return Path.GetFileName(path);
         }
 
         public override void OnRequestPermissionsResult(int requestCode, string[] permissions, Permission[] grantResults)

@@ -6,7 +6,7 @@ namespace Last.Core.Services
 {
     public interface IPhotoPickerService
     {
-        event Action<Stream> PhotoPickedSucceeded;
+        event Action<Stream, string> PhotoPickedSucceeded;
         event Action PhotoPickedFailed;
         void GetImageStreamAsync();
     }

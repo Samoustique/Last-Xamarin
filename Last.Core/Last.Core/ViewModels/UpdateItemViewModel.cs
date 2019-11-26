@@ -15,6 +15,15 @@ namespace Last.Core.ViewModels
             Text = Item.Text;
             Count = Item.Count;
             Description = Item.Description;
+            ImagePath = Item.ImagePath;
+            if(string.IsNullOrEmpty(Item.ImagePath))
+            {
+                Image = null;
+            }
+            else
+            {
+                Image =  Item.ImagePath;
+            }
         }
 
         private async void UpdateExecute()
@@ -22,6 +31,7 @@ namespace Last.Core.ViewModels
             Item.Text = Text;
             Item.Count = Count;
             Item.Description = Description;
+            Item.ImagePath = ImagePath;
             await Navigation.PopAsync();
             MessagingCenter.Send(this, "Update", Item);
         }

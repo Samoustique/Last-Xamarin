@@ -16,7 +16,7 @@
                 <Image
                     WidthRequest="200"
                     HeightRequest="200"
-                    Source="{Binding Image}"/>
+                    Source="{Binding Image, TargetNullValue=unknown.jpg}"/>
             </Frame>
             <Button
                 Text="Pick Photo"
