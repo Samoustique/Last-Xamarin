@@ -32,14 +32,15 @@
                         <ViewCell>
                             <StackLayout
                                 Padding="10">
-                                <Label Text="{Binding Text}" 
-                                   LineBreakMode="NoWrap" 
-                                   Style="{DynamicResource ListItemTextStyle}" 
-                                   FontSize="16" />
-                                <Label Text="{Binding Description}" 
-                                   LineBreakMode="NoWrap"
-                                   Style="{DynamicResource ListItemDetailTextStyle}"
-                                   FontSize="13" />
+                                <Frame CornerRadius="25" 
+                                   HorizontalOptions="Center"
+                                   Padding="0"
+                                   IsClippedToBounds="True">
+                                    <Image
+                                        WidthRequest="50"
+                                        HeightRequest="50"
+                                        Source="{Binding Image, TargetNullValue=unknown.jpg}"/>
+                                </Frame>
                                 <Label Text="{Binding Count}" 
                                    LineBreakMode="NoWrap"
                                    Style="{DynamicResource ListItemDetailTextStyle}"

@@ -8,10 +8,9 @@ namespace Last.Core.ViewModels
     public class ItemListViewModel : BaseViewModel
     {
         public Item Item { get; private set; }
-
-        public string Text => Item.Text;
-        public string Description => Item.Description;
+        
         public int Count => Item.Count;
+        public ImageSource Image => ImageSource.FromFile(Item.ImagePath);
 
         public Command OpenItemDetailCommand { get; set; }
         public INavigation Navigation { get; internal set; }
