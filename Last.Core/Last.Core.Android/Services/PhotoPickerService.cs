@@ -1,6 +1,5 @@
 ﻿using System;
 using System.IO;
-using System.Threading.Tasks;
 using Android;
 using Android.Content;
 using Android.Content.PM;
@@ -41,13 +40,6 @@ namespace Last.Core.Droid.Services
                 MainActivity.Instance.StartActivityForResult(
                     Intent.CreateChooser(intent, "Select Picture"),
                     MainActivity.PickImageId);
-
-                // Save the TaskCompletionSource object as a MainActivity property
-                MainActivity.Instance.PickImageTaskCompletionSource = new TaskCompletionSource<Stream>();
-
-                //// fire the event
-                //Stream s = MainActivity.Instance.PickImageTaskCompletionSource.Task.Result;
-                //PhotoPickedSucceeded?.Invoke(s);
             }
             else
             {

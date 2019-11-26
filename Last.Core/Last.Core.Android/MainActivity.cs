@@ -1,7 +1,6 @@
 ﻿using Android.App;
 using Android.Content.PM;
 using Android.OS;
-using System.Threading.Tasks;
 using System.IO;
 using Android.Content;
 using Xamarin.Forms;
@@ -28,8 +27,6 @@ namespace Last.Core.Droid
         public static readonly int PickImageId = 1000;
         public static readonly int PickImageRequestCode = 1;
 
-        public TaskCompletionSource<Stream> PickImageTaskCompletionSource { set; get; }
-
         public static MainActivity Instance;
 
         protected override void OnActivityResult(int requestCode, Result resultCode, Intent intent)
@@ -38,20 +35,18 @@ namespace Last.Core.Droid
 
             if (requestCode == PickImageId)
             {
+                var iService = DependencyService.Get<IPhotoPickerService>();
+                PhotoPickerService service = iService as PhotoPickerService;
+
                 if ((resultCode == Result.Ok) && (intent != null))
                 {
                     Android.Net.Uri uri = intent.Data;
                     Stream stream = ContentResolver.OpenInputStream(uri);
-
-                    // Set the Stream as the completion of the Task
-                    PickImageTaskCompletionSource.SetResult(stream);
-                    var test = DependencyService.Get<IPhotoPickerService>();
-                    PhotoPickerService p = test as PhotoPickerService;
-                    p.RaisePhotoPickedSucceeded(stream);
+                    service.RaisePhotoPickedSucceeded(stream);
                 }
                 else
                 {
-                    PickImageTaskCompletionSource.SetResult(null);
+                    service.RaisePhotoPickedSucceeded(null);
                 }
             }
         }

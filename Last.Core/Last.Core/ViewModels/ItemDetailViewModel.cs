@@ -1,5 +1,4 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
 using Last.Core.Models;
 using Last.Core.Services;
 using Xamarin.Forms;
@@ -32,6 +31,7 @@ namespace Last.Core.ViewModels
         {
             PickPhotoButtonCommand = new Command(PickPhotoButtonExecute);
             DeleteItemCommand = new Command<Item>(DeleteItemExecute, DeleteItemCanExecute);
+            //Image = ImageSource.FromFile("/data/user/0/com.companyname.Last.Core/files/Last/imagesFolder/test.jpg");
         }
 
         protected bool DeleteItemCanExecute(Item item)
@@ -57,8 +57,24 @@ namespace Last.Core.ViewModels
             UnsubscribePhotoPicker();
             if (stream != null)
             {
-                Image = ImageSource.FromStream(() => stream);
+                MemoryStream ms = CopyStreamToMemory(stream);
+                DependencyService.Get<IPhotoSerializerService>().SavePicture($"test.jpg", ms, "imagesFolder");
+                Image = ImageSource.FromStream(() => ms);
             }
+        }
+
+        private MemoryStream CopyStreamToMemory(Stream inputStream)
+        {
+            MemoryStream ret = new MemoryStream();
+            const int BUFFER_SIZE = 1024;
+            byte[] buf = new byte[BUFFER_SIZE];
+
+            int bytesread = 0;
+            while ((bytesread = inputStream.Read(buf, 0, BUFFER_SIZE)) > 0)
+                ret.Write(buf, 0, bytesread);
+
+            ret.Position = 0;
+            return ret;
         }
 
         private void OnPhotoPickedFailed()
