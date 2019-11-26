@@ -16,14 +16,7 @@ namespace Last.Core.ViewModels
             Count = Item.Count;
             Description = Item.Description;
             ImagePath = Item.ImagePath;
-            if(string.IsNullOrEmpty(Item.ImagePath))
-            {
-                Image = null;
-            }
-            else
-            {
-                Image =  Item.ImagePath;
-            }
+            Image = string.IsNullOrEmpty(Item.ImagePath) ? null : ImageSource.FromFile(Item.ImagePath);
         }
 
         private async void UpdateExecute()
