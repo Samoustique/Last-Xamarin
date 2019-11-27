@@ -18,7 +18,43 @@
     </ContentPage.ToolbarItems>
     <ContentPage.Content>
         <StackLayout>
-            <ListView x:Name="ItemsListView" 
+
+
+            <CollectionView
+                ItemsSource="{Binding Items}">
+                <CollectionView.ItemsLayout>
+                    <GridItemsLayout Orientation="Vertical"
+                        Span="3" />
+                </CollectionView.ItemsLayout>
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <Grid Padding="10">
+                            <Frame
+                                CornerRadius="100" 
+                                HorizontalOptions="Center"
+                                Padding="0"
+                                IsClippedToBounds="True">
+                                <Image
+                                        WidthRequest="80"
+                                        HeightRequest="80"
+                                        Source="{Binding Image, TargetNullValue=unknown.jpg}"/>
+                            </Frame>
+                            <Label
+                                Text="{Binding Count}" 
+                                LineBreakMode="NoWrap"
+                                Style="{DynamicResource ListItemDetailTextStyle}"
+                                FontSize="13" />
+                            <Button
+                                VerticalOptions="End"
+                                Text="Open"
+                                Command="{Binding OpenItemDetailCommand}"/>
+                        </Grid>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+            
+            
+            <!--<ListView x:Name="ItemsListView" 
                 ItemsSource="{Binding Items}"
                 VerticalOptions="FillAndExpand"
                  HasUnevenRows="true"
@@ -52,7 +88,7 @@
                         </ViewCell>
                     </DataTemplate>
                 </ListView.ItemTemplate>
-            </ListView>
+            </ListView>-->
         </StackLayout>
     </ContentPage.Content>
 </ContentPage>
