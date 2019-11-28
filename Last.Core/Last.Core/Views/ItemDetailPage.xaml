@@ -19,7 +19,7 @@
                     Source="{Binding Image, TargetNullValue=unknown.jpg}"/>
             </Frame>
             <Button
-                Text="Pick Photo"
+                Text="Picture"
                 Command="{Binding PickPhotoButtonCommand}" />
             <Label Text="Text" FontSize="Medium" />
             <Entry Text="{Binding Text}" FontSize="Small" />

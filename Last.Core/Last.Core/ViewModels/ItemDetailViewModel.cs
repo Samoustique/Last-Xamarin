@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using Last.Core.Models;
 using Last.Core.Services;
 using Xamarin.Forms;
@@ -7,6 +8,9 @@ namespace Last.Core.ViewModels
 {
     public abstract class ItemDetailViewModel : BaseViewModel
     {
+        public readonly string PictureChoiceCamera = "Take Photo";
+        public readonly string PictureChoiceBrowse = "Choose from Gallery";
+
         public string ButtonTitle { get; set; }
         public string Text { get; set; }
         public int Count { get; set; }
@@ -23,8 +27,11 @@ namespace Last.Core.ViewModels
 
         public INavigation Navigation { get; internal set; }
         public Command MainCommand { get; set; }
+
         public Command PickPhotoButtonCommand { get; set; }
         public Command DeleteItemCommand { get; set; }
+
+        public event Action PictureChoice;
 
         private ImageSource _image;
 
@@ -47,6 +54,23 @@ namespace Last.Core.ViewModels
         }
 
         private void PickPhotoButtonExecute()
+        {
+            PictureChoice?.Invoke();
+        }
+
+        internal void PictureChoiceDone(string choice)
+        {
+            if(choice == PictureChoiceCamera)
+            {
+
+            }
+            else if (choice == PictureChoiceBrowse)
+            {
+                BrowsePicture();
+            }
+        }
+
+        private void BrowsePicture()
         {
             var photoPickerService = DependencyService.Get<IPhotoPickerService>();
             SubscribePhotoPicker(photoPickerService);

@@ -5,13 +5,13 @@ using Xamarin.Forms;
 using Xamarin.Forms.Platform.Android;
 
 [assembly: ResolutionGroupName("Last.Core.Services")]
-[assembly: ExportEffect(typeof(AndroidLongPressedEffect), "LongPressedEffect")]
+[assembly: ExportEffect(typeof(AndroidPressedEffect), "PressedEffect")]
 namespace Last.Core.Droid.Services
 {
     /// <summary>
     /// Android long pressed effect.
     /// </summary>
-    public class AndroidLongPressedEffect : PlatformEffect
+    public class AndroidPressedEffect : PlatformEffect
     {
         private bool _attached;
 
@@ -22,10 +22,10 @@ namespace Last.Core.Droid.Services
 
         /// <summary>
         /// Initializes a new instance of the
-        /// <see cref="T:Yukon.Application.AndroidComponents.Effects.AndroidLongPressedEffect"/> class.
+        /// <see cref="T:Yukon.Application.AndroidComponents.Effects.AndroidPressedEffect"/> class.
         /// Empty constructor required for the odd Xamarin.Forms reflection constructor search
         /// </summary>
-        public AndroidLongPressedEffect()
+        public AndroidPressedEffect()
         {
         }
 
@@ -41,11 +41,13 @@ namespace Last.Core.Droid.Services
                 {
                     Control.LongClickable = true;
                     Control.LongClick += Control_LongClick;
+                    Control.Click += Control_Click;
                 }
                 else
                 {
                     Container.LongClickable = true;
                     Container.LongClick += Control_LongClick;
+                    Container.Click += Control_Click;
                 }
                 _attached = true;
             }
@@ -59,8 +61,15 @@ namespace Last.Core.Droid.Services
         private void Control_LongClick(object sender, Android.Views.View.LongClickEventArgs e)
         {
             Console.WriteLine("Invoking long click command");
-            var command = LongPressedEffect.GetCommand(Element);
-            command?.Execute(LongPressedEffect.GetCommandParameter(Element));
+            var command = PressedEffect.GetLongClickCommand(Element);
+            command?.Execute(PressedEffect.GetCommandParameter(Element));
+        }
+
+        private void Control_Click(object sender, EventArgs e)
+        {
+            Console.WriteLine("Invoking click command");
+            var command = PressedEffect.GetClickCommand(Element);
+            command?.Execute(PressedEffect.GetCommandParameter(Element));
         }
 
         /// <summary>
@@ -74,11 +83,13 @@ namespace Last.Core.Droid.Services
                 {
                     Control.LongClickable = true;
                     Control.LongClick -= Control_LongClick;
+                    Control.Click -= Control_Click;
                 }
                 else
                 {
                     Container.LongClickable = true;
                     Container.LongClick -= Control_LongClick;
+                    Container.Click -= Control_Click;
                 }
                 _attached = false;
             }

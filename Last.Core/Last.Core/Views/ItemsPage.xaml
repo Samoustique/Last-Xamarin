@@ -19,8 +19,6 @@
     </ContentPage.ToolbarItems>
     <ContentPage.Content>
         <StackLayout>
-
-
             <CollectionView
                 ItemsSource="{Binding Items}">
                 <CollectionView.ItemsLayout>
@@ -31,14 +29,14 @@
                     <DataTemplate>
                         <Grid
                             Padding="10"
-                            effects:LongPressedEffect.Command="{Binding OpenItemDetailCommand}">
-                            <Grid.Effects>
-                                <effects:LongPressedEffect/>
-                            </Grid.Effects>
-                            <Grid.GestureRecognizers>
+                            effects:PressedEffect.ClickCommand="{Binding IncrementCommand}"
+                            effects:PressedEffect.LongClickCommand="{Binding OpenItemDetailCommand}">
+                            <!--<Grid.GestureRecognizers>
                                 <TapGestureRecognizer Command="{Binding IncrementCommand}"/>
-                            </Grid.GestureRecognizers>
-                            
+                            </Grid.GestureRecognizers>-->
+                            <Grid.Effects>
+                                <effects:PressedEffect/>
+                            </Grid.Effects>
                             <Frame
                                 CornerRadius="100" 
                                 HorizontalOptions="Center"

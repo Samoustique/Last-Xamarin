@@ -60,7 +60,7 @@
     <Compile Include="MainActivity.cs" />
     <Compile Include="Resources\Resource.designer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Services\AndroidLongPressedEffect.cs" />
+    <Compile Include="Services\AndroidPressedEffect.cs" />
     <Compile Include="Services\PhotoPickerService.cs" />
     <Compile Include="Services\PhotoSerializerService.cs" />
   </ItemGroup>

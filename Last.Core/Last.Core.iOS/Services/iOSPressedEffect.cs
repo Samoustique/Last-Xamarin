@@ -5,21 +5,21 @@ using Xamarin.Forms;
 using Xamarin.Forms.Platform.iOS;
 
 [assembly: ResolutionGroupName("Last.Core.Services")]
-[assembly: ExportEffect(typeof(iOSLongPressedEffect), "LongPressedEffect")]
+[assembly: ExportEffect(typeof(iOSPressedEffect), "PressedEffect")]
 namespace Last.Core.iOS.Services
 {
     /// <summary>
     /// iOS long pressed effect
     /// </summary>
-    public class iOSLongPressedEffect : PlatformEffect
+    public class iOSPressedEffect : PlatformEffect
     {
         private bool _attached;
         private readonly UILongPressGestureRecognizer _longPressRecognizer;
         /// <summary>
         /// Initializes a new instance of the
-        /// <see cref="T:Yukon.Application.iOSComponents.Effects.iOSLongPressedEffect"/> class.
+        /// <see cref="T:Yukon.Application.iOSComponents.Effects.iOSPressedEffect"/> class.
         /// </summary>
-        public iOSLongPressedEffect()
+        public iOSPressedEffect()
         {
             _longPressRecognizer = new UILongPressGestureRecognizer(HandleLongClick);
         }
@@ -42,8 +42,8 @@ namespace Last.Core.iOS.Services
         /// </summary>
         private void HandleLongClick()
         {
-            var command = LongPressedEffect.GetCommand(Element);
-            command?.Execute(LongPressedEffect.GetCommandParameter(Element));
+            var command = PressedEffect.GetLongClickCommand(Element);
+            command?.Execute(PressedEffect.GetCommandParameter(Element));
         }
 
         /// <summary>
