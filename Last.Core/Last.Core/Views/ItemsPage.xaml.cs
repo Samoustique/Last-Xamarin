@@ -12,18 +12,6 @@ namespace Last.Core.Views
             InitializeComponent();
         }
 
-        void OnItemSelected(object sender, SelectedItemChangedEventArgs args)
-        {
-            var itemListViewModel = args.SelectedItem as ItemListViewModel;
-            if (itemListViewModel == null)
-                return;
-
-            itemListViewModel.IncrementAsync();
-
-            // Manually deselect item.
-            //ItemsListView.SelectedItem = null;
-        }
-
         protected override void OnAppearing()
         {
             base.OnAppearing();
@@ -31,7 +19,9 @@ namespace Last.Core.Views
             (BindingContext as ItemsViewModel).Navigation = Navigation;
 
             if ((BindingContext as ItemsViewModel).Items.Count == 0)
+            {
                 (BindingContext as ItemsViewModel).LoadItemsCommand.Execute(null);
+            }
         }
     }
 }

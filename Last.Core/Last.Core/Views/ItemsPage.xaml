@@ -2,6 +2,7 @@
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:lc="clr-namespace:Xamarin.Forms.Labs.Controls;assembly=Xamarin.Forms.Labs"
+             xmlns:effects="clr-namespace:Last.Core.Services"
              x:Class="Last.Core.Views.ItemsPage"
               Title="{Binding Title}"
              x:Name="BrowseItemsPage">
@@ -28,26 +29,31 @@
                 </CollectionView.ItemsLayout>
                 <CollectionView.ItemTemplate>
                     <DataTemplate>
-                        <Grid Padding="10">
+                        <Grid
+                            Padding="10"
+                            effects:LongPressedEffect.Command="{Binding OpenItemDetailCommand}">
+                            <Grid.Effects>
+                                <effects:LongPressedEffect/>
+                            </Grid.Effects>
+                            <Grid.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding IncrementCommand}"/>
+                            </Grid.GestureRecognizers>
+                            
                             <Frame
                                 CornerRadius="100" 
                                 HorizontalOptions="Center"
                                 Padding="0"
                                 IsClippedToBounds="True">
                                 <Image
-                                        WidthRequest="80"
-                                        HeightRequest="80"
-                                        Source="{Binding Image, TargetNullValue=unknown.jpg}"/>
+                                    WidthRequest="80"
+                                    HeightRequest="80"
+                                    Source="{Binding Image, TargetNullValue=unknown.jpg}"/>
                             </Frame>
                             <Label
                                 Text="{Binding Count}" 
                                 LineBreakMode="NoWrap"
                                 Style="{DynamicResource ListItemDetailTextStyle}"
-                                FontSize="13" />
-                            <Button
-                                VerticalOptions="End"
-                                Text="Open"
-                                Command="{Binding OpenItemDetailCommand}"/>
+                                FontSize="13"/>
                         </Grid>
                     </DataTemplate>
                 </CollectionView.ItemTemplate>

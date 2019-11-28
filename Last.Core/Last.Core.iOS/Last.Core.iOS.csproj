@@ -67,6 +67,7 @@
   <ItemGroup>
     <Compile Include="Main.cs" />
     <Compile Include="AppDelegate.cs" />
+    <Compile Include="Services\iOSLongPressedEffect.cs" />
     <Compile Include="Services\PhotoPickerService.cs" />
     <Compile Include="Services\PhotoSerializerService.cs" />
     <None Include="Entitlements.plist" />
