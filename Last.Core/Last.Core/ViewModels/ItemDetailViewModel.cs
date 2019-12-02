@@ -39,7 +39,6 @@ namespace Last.Core.ViewModels
         {
             PickPhotoButtonCommand = new Command(PickPhotoButtonExecute);
             DeleteItemCommand = new Command<Item>(DeleteItemExecute, DeleteItemCanExecute);
-            //Image = ImageSource.FromFile("/data/user/0/com.companyname.Last.Core/files/Last/imagesFolder/test.jpg");
         }
 
         protected bool DeleteItemCanExecute(Item item)
@@ -49,8 +48,15 @@ namespace Last.Core.ViewModels
 
         private async void DeleteItemExecute(Item item)
         {
+            var fileDeleterService = DependencyService.Get<IFileDeleterService>();
+            fileDeleterService.FileDeleted += OnFileDeleted;
+            fileDeleterService.DeleteFile(item.Id, item.ImagePath);
+        }
+
+        private async void OnFileDeleted(string itemId, bool result)
+        {
             await Navigation.PopAsync();
-            MessagingCenter.Send(this, "Delete", item.Id);
+            MessagingCenter.Send(this, "Delete", itemId);
         }
 
         private void PickPhotoButtonExecute()
