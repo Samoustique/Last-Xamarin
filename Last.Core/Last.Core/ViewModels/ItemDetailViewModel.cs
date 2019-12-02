@@ -2,6 +2,7 @@
 using System.IO;
 using Last.Core.Models;
 using Last.Core.Services;
+using Plugin.Media;
 using Xamarin.Forms;
 
 namespace Last.Core.ViewModels
@@ -68,11 +69,53 @@ namespace Last.Core.ViewModels
         {
             if(choice == PictureChoiceCamera)
             {
-
+                TakePicture();
             }
             else if (choice == PictureChoiceBrowse)
             {
                 BrowsePicture();
+            }
+        }
+
+        private async void TakePicture()
+        {
+            //var file = await CrossMedia.Current.TakePhotoAsync(new Plugin.Media.Abstractions.StoreCameraMediaOptions
+            //{
+            //    Directory = "Test",
+            //    SaveToAlbum = true,
+            //    CompressionQuality = 75,
+            //    CustomPhotoSize = 50,
+            //    PhotoSize = PhotoSize.MaxWidthHeight,
+            //    MaxWidthHeight = 2000,
+            //    DefaultCamera = CameraDevice.Front
+            //});
+            await CrossMedia.Current.Initialize();
+            if (!CrossMedia.Current.IsCameraAvailable ||
+                !CrossMedia.Current.IsTakePhotoSupported)
+            {
+                // TODO Message can't take camera
+                return;
+            }
+
+            var file = await CrossMedia.Current.TakePhotoAsync(new Plugin.Media.Abstractions.StoreCameraMediaOptions()
+            {
+                //Directory = "Sample",
+                //Name = "test.jpg"
+            });
+
+            if(file == null)
+            {
+                // TODO Message can't take camera
+                return;
+            }
+
+            var stream = file.GetStream();
+            if (stream != null)
+            {
+                MemoryStream ms = CopyStreamToMemory(stream);
+                var name = file.ToString();
+                ImagePath = DependencyService.Get<IPhotoSerializerService>().SavePicture(/*filename*/ name, ms, "imagesFolder");
+                Image = ImageSource.FromStream(() => ms);
             }
         }
 

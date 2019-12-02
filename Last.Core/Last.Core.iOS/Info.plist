@@ -42,5 +42,7 @@
     <string>Assets.xcassets/AppIcon.appiconset</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>Picture Picker uses photo library</string>
+    <key>NSCameraUsageDescription</key>
+    <string>Camera Usage</string>
 </dict>
 </plist>

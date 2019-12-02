@@ -10,6 +10,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Xam.Plugin.Media" Version="4.4.8-beta" />
     <PackageReference Include="Xamarin.Forms" Version="4.4.0.991210-pre2" />  
   </ItemGroup>
 
