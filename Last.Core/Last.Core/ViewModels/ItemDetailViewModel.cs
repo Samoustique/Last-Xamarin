@@ -3,6 +3,7 @@ using System.IO;
 using Last.Core.Models;
 using Last.Core.Services;
 using Plugin.Media;
+using Plugin.Media.Abstractions;
 using Xamarin.Forms;
 
 namespace Last.Core.ViewModels
@@ -79,6 +80,21 @@ namespace Last.Core.ViewModels
 
         private async void TakePicture()
         {
+            await CrossMedia.Current.Initialize();
+            if (!CrossMedia.Current.IsCameraAvailable ||
+                !CrossMedia.Current.IsTakePhotoSupported)
+            {
+                // TODO Message can't take camera
+                return;
+            }
+
+            // todo return bool
+            if (!DependencyService.Get<IRequestPermissionService>().RequestCameraPermission())
+            {
+                // TODO No permission
+                return;
+            }
+
             //var file = await CrossMedia.Current.TakePhotoAsync(new Plugin.Media.Abstractions.StoreCameraMediaOptions
             //{
             //    Directory = "Test",
@@ -89,21 +105,14 @@ namespace Last.Core.ViewModels
             //    MaxWidthHeight = 2000,
             //    DefaultCamera = CameraDevice.Front
             //});
-            await CrossMedia.Current.Initialize();
-            if (!CrossMedia.Current.IsCameraAvailable ||
-                !CrossMedia.Current.IsTakePhotoSupported)
-            {
-                // TODO Message can't take camera
-                return;
-            }
 
             var file = await CrossMedia.Current.TakePhotoAsync(new Plugin.Media.Abstractions.StoreCameraMediaOptions()
             {
-                //Directory = "Sample",
-                //Name = "test.jpg"
+                Directory = "Sample",
+                Name = "test.jpg"
             });
 
-            if(file == null)
+            if (file == null)
             {
                 // TODO Message can't take camera
                 return;
