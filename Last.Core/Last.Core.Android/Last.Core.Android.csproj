@@ -67,6 +67,7 @@
     <Compile Include="Services\FileDeleterService.cs" />
     <Compile Include="Services\PhotoPickerService.cs" />
     <Compile Include="Services\PhotoSerializerService.cs" />
+    <Compile Include="Services\RequestPermissionService.cs" />
   </ItemGroup>
   <ItemGroup>
     <AndroidAsset Include="Assets\FontAwesome5Regular.otf" />
