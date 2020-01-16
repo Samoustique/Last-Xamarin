@@ -27,6 +27,7 @@ namespace Last.Core.Droid
         public static readonly int PickImageId = 1000;
         public const int PickImageRequestCode = 1;
         public const int CameraRequestCode = 2;
+        public const int ExternalStorageRequestCode = 3;
 
         public static MainActivity Instance;
 
@@ -77,6 +78,16 @@ namespace Last.Core.Droid
                     else
                     {
                         DependencyService.Get<RequestPermissionService>().RaiseCameraPermissionFailed();
+                    }
+                    break;
+                case ExternalStorageRequestCode:
+                    if ((grantResults.Length == 1) && (grantResults[0] == Permission.Granted))
+                    {
+                        DependencyService.Get<RequestPermissionService>().RaiseWriteExternalStoragePermissionSucceded();
+                    }
+                    else
+                    {
+                        DependencyService.Get<RequestPermissionService>().RaiseWriteExternalStoragePermissionFailed();
                     }
                     break;
                 default:

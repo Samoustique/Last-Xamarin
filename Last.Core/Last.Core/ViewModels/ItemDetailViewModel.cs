@@ -10,9 +10,20 @@ namespace Last.Core.ViewModels
 {
     public abstract class ItemDetailViewModel : BaseViewModel
     {
+        private ImageSource _image;
+        private bool _isCameraPermissionOn = false;
+        private bool _isWriteExternalStoragePermissionOn = false;
+
         public readonly string PictureChoiceCamera = "Take Photo";
         public readonly string PictureChoiceBrowse = "Choose from Gallery";
 
+        public ItemDetailViewModel()
+        {
+            PickPhotoButtonCommand = new Command(PickPhotoButtonExecute);
+            DeleteItemCommand = new Command<Item>(DeleteItemExecute, DeleteItemCanExecute);
+        }
+
+        private bool HasPermissionToTakePhoto => _isCameraPermissionOn && _isWriteExternalStoragePermissionOn;
         public string ButtonTitle { get; set; }
         public string Text { get; set; }
         public int Count { get; set; }
@@ -34,14 +45,6 @@ namespace Last.Core.ViewModels
         public Command DeleteItemCommand { get; set; }
 
         public event Action PictureChoice;
-
-        private ImageSource _image;
-
-        public ItemDetailViewModel()
-        {
-            PickPhotoButtonCommand = new Command(PickPhotoButtonExecute);
-            DeleteItemCommand = new Command<Item>(DeleteItemExecute, DeleteItemCanExecute);
-        }
 
         protected bool DeleteItemCanExecute(Item item)
         {
@@ -70,7 +73,7 @@ namespace Last.Core.ViewModels
         {
             if(choice == PictureChoiceCamera)
             {
-                TakePicture();
+                TakePictureCheckingPermission();
             }
             else if (choice == PictureChoiceBrowse)
             {
@@ -78,7 +81,7 @@ namespace Last.Core.ViewModels
             }
         }
 
-        private async void TakePicture()
+        private async void TakePictureCheckingPermission()
         {
             await CrossMedia.Current.Initialize();
             if (!CrossMedia.Current.IsCameraAvailable ||
@@ -87,44 +90,93 @@ namespace Last.Core.ViewModels
                 // TODO Message can't take camera
                 return;
             }
+            Console.WriteLine("pouet");
+            var requestPermissionService = DependencyService.Get<IRequestPermissionService>();
+            requestPermissionService.WriteExternalStoragePermissionFailed += OnWriteExternalStoragePermissionFailed;
+            requestPermissionService.WriteExternalStoragePermissionSucceded += OnWriteExternalStoragePermissionSucceded;
+            requestPermissionService.CameraPermissionFailed += OnCameraPermissionFailed;
+            requestPermissionService.CameraPermissionSucceded += OnCameraPermissionSucceded;
 
-            // todo return bool
-            if (!DependencyService.Get<IRequestPermissionService>().RequestCameraPermission())
+            if (!requestPermissionService.RequestCameraPermission())
             {
-                // TODO No permission
                 return;
             }
 
-            //var file = await CrossMedia.Current.TakePhotoAsync(new Plugin.Media.Abstractions.StoreCameraMediaOptions
-            //{
-            //    Directory = "Test",
-            //    SaveToAlbum = true,
-            //    CompressionQuality = 75,
-            //    CustomPhotoSize = 50,
-            //    PhotoSize = PhotoSize.MaxWidthHeight,
-            //    MaxWidthHeight = 2000,
-            //    DefaultCamera = CameraDevice.Front
-            //});
+            _isWriteExternalStoragePermissionOn = true;
+            _isCameraPermissionOn = true;
 
-            var file = await CrossMedia.Current.TakePhotoAsync(new Plugin.Media.Abstractions.StoreCameraMediaOptions()
-            {
-                Directory = "Sample",
-                Name = "test.jpg"
-            });
+            TryTakePicture();
+        }
 
-            if (file == null)
+        private void OnWriteExternalStoragePermissionSucceded()
+        {
+            _isWriteExternalStoragePermissionOn = true;
+            TryTakePicture();
+        }
+
+        private void OnWriteExternalStoragePermissionFailed()
+        {
+            // todo display message "no permission"
+            _isWriteExternalStoragePermissionOn = false;
+        }
+
+        private void OnCameraPermissionSucceded()
+        {
+            _isCameraPermissionOn = true;
+            TryTakePicture();
+        }
+
+        private void OnCameraPermissionFailed()
+        {
+            // todo display message "no permission"
+            _isCameraPermissionOn = false;
+        }
+
+        private async void TryTakePicture()
+        {
+            try
             {
-                // TODO Message can't take camera
-                return;
+                if (!HasPermissionToTakePhoto)
+                {
+                    return;
+                }
+
+                //var file = await CrossMedia.Current.TakePhotoAsync(new Plugin.Media.Abstractions.StoreCameraMediaOptions
+                //{
+                //    //Directory = "Test",
+                //    SaveToAlbum = true,
+                //    CompressionQuality = 75,
+                //    CustomPhotoSize = 50,
+                //    PhotoSize = PhotoSize.MaxWidthHeight,
+                //    MaxWidthHeight = 2000,
+                //    DefaultCamera = CameraDevice.Front
+                //});
+
+                var file = await CrossMedia.Current.TakePhotoAsync(new Plugin.Media.Abstractions.StoreCameraMediaOptions()
+                {
+                    Directory = "Sample",
+                    Name = "test.jpg"
+                });
+
+                if (file == null)
+                {
+                    // TODO Message can't take camera
+                    return;
+                }
+
+                var stream = file.GetStream();
+                if (stream != null)
+                {
+                    MemoryStream ms = CopyStreamToMemory(stream);
+                    var name = file.ToString();
+                    ImagePath = DependencyService.Get<IPhotoSerializerService>().SavePicture(/*filename*/ name, ms, "imagesFolder");
+                    Image = ImageSource.FromStream(() => ms);
+                }
             }
-
-            var stream = file.GetStream();
-            if (stream != null)
+            catch (Exception e)
             {
-                MemoryStream ms = CopyStreamToMemory(stream);
-                var name = file.ToString();
-                ImagePath = DependencyService.Get<IPhotoSerializerService>().SavePicture(/*filename*/ name, ms, "imagesFolder");
-                Image = ImageSource.FromStream(() => ms);
+                int kk = 0;
+                ++kk;
             }
         }
 

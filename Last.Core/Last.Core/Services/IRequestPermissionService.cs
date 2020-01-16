@@ -6,6 +6,8 @@ namespace Last.Core.Services
     {
         event Action CameraPermissionSucceded;
         event Action CameraPermissionFailed;
-        void RequestCameraPermission();
+        event Action WriteExternalStoragePermissionSucceded;
+        event Action WriteExternalStoragePermissionFailed;
+        bool RequestCameraPermission();
     }
 }
