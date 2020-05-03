@@ -38,7 +38,9 @@
                                 <effects:PressedEffect/>
                             </Grid.Effects>
                             <Frame
-                                CornerRadius="100" 
+                                CornerRadius="30" 
+                                WidthRequest="60"
+                                HeightRequest="60"
                                 HorizontalOptions="Center"
                                 Padding="0"
                                 IsClippedToBounds="True">

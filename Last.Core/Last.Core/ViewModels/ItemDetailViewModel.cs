@@ -54,6 +54,10 @@ namespace Last.Core.ViewModels
         private async void DeleteItemExecute(Item item)
         {
             var fileDeleterService = DependencyService.Get<IFileDeleterService>();
+            if(fileDeleterService == null)
+            {
+                return;
+            }
             fileDeleterService.FileDeleted += OnFileDeleted;
             fileDeleterService.DeleteFile(item.Id, item.ImagePath);
         }
@@ -90,7 +94,7 @@ namespace Last.Core.ViewModels
                 // TODO Message can't take camera
                 return;
             }
-            Console.WriteLine("pouet");
+
             var requestPermissionService = DependencyService.Get<IRequestPermissionService>();
             requestPermissionService.WriteExternalStoragePermissionFailed += OnWriteExternalStoragePermissionFailed;
             requestPermissionService.WriteExternalStoragePermissionSucceded += OnWriteExternalStoragePermissionSucceded;

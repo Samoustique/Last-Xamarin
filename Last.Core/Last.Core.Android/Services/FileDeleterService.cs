@@ -1,7 +1,11 @@
 ﻿using System;
 using System.IO;
+using Last.Core.Droid.Services;
 using Last.Core.Services;
+using Xamarin.Forms;
 
+
+[assembly: Dependency(typeof(FileDeleterService))]
 namespace Last.Core.Droid.Services
 {
     public class FileDeleterService : IFileDeleterService
