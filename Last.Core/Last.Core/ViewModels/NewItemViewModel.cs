@@ -21,6 +21,7 @@ namespace Last.Core.ViewModels
                 Text = this.Text,
                 Count = this.Count,
                 Description = this.Description,
+                ImagePath = ImagePath,
                 LastModificationDate = DateTime.Now
             });
         }
