@@ -82,6 +82,7 @@ namespace Last.Core.ViewModels
             }
             catch (Exception ex)
             {
+                // TODO error
                 Debug.WriteLine(ex);
             }
             finally

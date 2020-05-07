@@ -3,7 +3,6 @@ using System.IO;
 using Last.Core.Models;
 using Last.Core.Services;
 using Plugin.Media;
-using Plugin.Media.Abstractions;
 using Xamarin.Forms;
 
 namespace Last.Core.ViewModels
@@ -141,9 +140,9 @@ namespace Last.Core.ViewModels
                     return;
                 }
 
-                //var file = await CrossMedia.Current.TakePhotoAsync(new Plugin.Media.Abstractions.StoreCameraMediaOptions
+                var file = await CrossMedia.Current.TakePhotoAsync(new Plugin.Media.Abstractions.StoreCameraMediaOptions());
                 //{
-                //    //Directory = "Test",
+                //    Directory = "Last",
                 //    SaveToAlbum = true,
                 //    CompressionQuality = 75,
                 //    CustomPhotoSize = 50,
@@ -151,12 +150,6 @@ namespace Last.Core.ViewModels
                 //    MaxWidthHeight = 2000,
                 //    DefaultCamera = CameraDevice.Front
                 //});
-
-                var file = await CrossMedia.Current.TakePhotoAsync(new Plugin.Media.Abstractions.StoreCameraMediaOptions()
-                {
-                    Directory = "Sample",
-                    Name = "test.jpg"
-                });
 
                 if (file == null)
                 {
@@ -168,13 +161,13 @@ namespace Last.Core.ViewModels
                 if (stream != null)
                 {
                     MemoryStream ms = CopyStreamToMemory(stream);
-                    var name = file.ToString();
-                    ImagePath = DependencyService.Get<IPhotoSerializerService>().SavePicture(/*filename*/ name, ms, "imagesFolder");
+                    ImagePath = DependencyService.Get<IPhotoSerializerService>().SavePicture(Path.GetFileName(file.Path), ms, "imagesFolder");
                     Image = ImageSource.FromStream(() => ms);
                 }
             }
             catch (Exception e)
             {
+                // TODO display error
                 int kk = 0;
                 ++kk;
             }
