@@ -3,6 +3,7 @@ using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 using Last.Core.Views;
 using Last.Core.ViewModels;
+using Last.Core.Services;
 
 [assembly: XamlCompilation(XamlCompilationOptions.Compile)]
 namespace Last.Core
@@ -14,7 +15,8 @@ namespace Last.Core
         {
             InitializeComponent();
 
-            ItemsViewModel itemsViewModel = new ItemsViewModel();
+            Messaging messaging = new Messaging();
+            ItemsViewModel itemsViewModel = new ItemsViewModel(messaging);
             MainPage = new NavigationPage(new ItemsPage());
             MainPage.BindingContext = itemsViewModel;
         }

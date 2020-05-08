@@ -16,8 +16,9 @@ namespace Last.Core.ViewModels
         public readonly string PictureChoiceCamera = "Take Photo";
         public readonly string PictureChoiceBrowse = "Choose from Gallery";
 
-        public ItemDetailViewModel()
+        public ItemDetailViewModel(Messaging messaging)
         {
+            Messaging = messaging;
             PickPhotoButtonCommand = new Command(PickPhotoButtonExecute);
             DeleteItemCommand = new Command<Item>(DeleteItemExecute, DeleteItemCanExecute);
         }
@@ -45,6 +46,8 @@ namespace Last.Core.ViewModels
 
         public event Action PictureChoice;
 
+        protected Messaging Messaging { get; }
+
         protected bool DeleteItemCanExecute(Item item)
         {
             return item != null;
@@ -60,7 +63,7 @@ namespace Last.Core.ViewModels
         private async void OnFileDeleted(string itemId, bool result)
         {
             await Navigation.PopAsync();
-            MessagingCenter.Send(this, "Delete", itemId);
+            Messaging.SendDelete(this, itemId);
         }
 
         private void PickPhotoButtonExecute()

@@ -1,4 +1,5 @@
 ﻿using Last.Core.Models;
+using Last.Core.Services;
 using Xamarin.Forms;
 
 namespace Last.Core.ViewModels
@@ -7,7 +8,7 @@ namespace Last.Core.ViewModels
     {
         public Item Item { get; }
 
-        public UpdateItemViewModel(Item item)
+        public UpdateItemViewModel(Item item, Messaging messaging) : base(messaging)
         {
             MainCommand = new Command(UpdateExecute);
             ButtonTitle = "Update";
@@ -26,7 +27,7 @@ namespace Last.Core.ViewModels
             Item.Description = Description;
             Item.ImagePath = ImagePath;
             await Navigation.PopAsync();
-            MessagingCenter.Send(this, "Update", Item);
+            Messaging.SendUpdate(this, Item);
         }
     }
 }

@@ -20,15 +20,17 @@ namespace Last.Core.ViewModels
 
         private Lazy<MockDataStore> Mock = new Lazy<MockDataStore>(() => new MockDataStore());
         private IDataStore<Item> DataStore => DependencyService.Get<IDataStore<Item>>() ?? Mock.Value;
+        private Messaging _messaging;
 
-        public ItemsViewModel()
+        public ItemsViewModel(Messaging messaging)
         {
             Title = "Last";
+            _messaging = messaging;
             Items = new ObservableCollection<ItemListViewModel>();
             LoadItemsCommand = new Command(async () => await ExecuteLoadItemsCommand());
             AddItemCommand = new Command(AddItemExecute);
 
-            MessagingCenter.Subscribe<NewItemViewModel, Item>(this, "Save", async (obj, item) =>
+            messaging.SubscribeSave<NewItemViewModel, Item>(this, async (obj, item) =>
             {
                 // Save
                 await DataStore.AddItemAsync(item);
@@ -36,8 +38,7 @@ namespace Last.Core.ViewModels
                 // Refresh the list
                 LoadItemsCommand.Execute(null);
             });
-
-            MessagingCenter.Subscribe<UpdateItemViewModel, Item>(this, "Update", async (obj, item) =>
+            messaging.SubscribeUpdate<UpdateItemViewModel, Item>(this, async (obj, item) =>
             {
                 // Update
                 await DataStore.UpdateItemAsync(item);
@@ -45,8 +46,7 @@ namespace Last.Core.ViewModels
                 // Refresh the list
                 LoadItemsCommand.Execute(null);
             });
-
-            MessagingCenter.Subscribe<ItemDetailViewModel, string>(this, "Delete", async (obj, id) =>
+            messaging.SubscribeDelete<ItemDetailViewModel, string>(this, async (obj, id) =>
             {
                 // Delete
                 await DataStore.DeleteItemAsync(id);
@@ -58,7 +58,7 @@ namespace Last.Core.ViewModels
 
         private async void AddItemExecute()
         {
-            var viewModel = new NewItemViewModel();
+            var viewModel = new NewItemViewModel(_messaging);
             await Navigation.PushAsync(new ItemDetailPage(viewModel));
         }
 
@@ -75,7 +75,7 @@ namespace Last.Core.ViewModels
                 var items = await DataStore.GetItemsAsync(true);
                 foreach (var item in items.OrderByDescending(x => x.LastModificationDate))
                 {
-                    var itemListViewModel = new ItemListViewModel(item, Navigation);
+                    var itemListViewModel = new ItemListViewModel(item, Navigation, _messaging);
                     itemListViewModel.CountChanged += OnCountChanged;
                     Items.Add(itemListViewModel);
                 }

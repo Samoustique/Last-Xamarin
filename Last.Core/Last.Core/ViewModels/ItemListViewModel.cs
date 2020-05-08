@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Windows.Input;
 using Last.Core.Models;
+using Last.Core.Services;
 using Last.Core.Views;
 using Xamarin.Forms;
 
@@ -8,6 +9,8 @@ namespace Last.Core.ViewModels
 {
     public class ItemListViewModel : BaseViewModel
     {
+        private Messaging _messaging;
+
         public Item Item { get; private set; }
 
         public int Count => Item.Count;
@@ -25,8 +28,9 @@ namespace Last.Core.ViewModels
 
         public event Action CountChanged;
 
-        public ItemListViewModel(Item item, INavigation navigation)
+        public ItemListViewModel(Item item, INavigation navigation, Services.Messaging messaging)
         {
+            _messaging = messaging;
             Item = item;
             Navigation = navigation;
             OpenItemDetailCommand = new Command(OpenItemDetailExecute);
@@ -42,7 +46,7 @@ namespace Last.Core.ViewModels
 
         private async void OpenItemDetailExecute()
         {
-            var viewModel = new UpdateItemViewModel(Item);
+            var viewModel = new UpdateItemViewModel(Item, _messaging);
             await Navigation.PushAsync(new ItemDetailPage(viewModel));
         }
     }

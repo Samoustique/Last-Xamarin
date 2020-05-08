@@ -1,4 +1,5 @@
 ﻿using Last.Core.Models;
+using Last.Core.Services;
 using System;
 using Xamarin.Forms;
 
@@ -6,7 +7,7 @@ namespace Last.Core.ViewModels
 {
     public class NewItemViewModel : ItemDetailViewModel
     {
-        public NewItemViewModel()
+        public NewItemViewModel(Messaging messaging) : base(messaging)
         {
             MainCommand = new Command(SaveExecute);
             ButtonTitle = "Save";
@@ -15,7 +16,7 @@ namespace Last.Core.ViewModels
         private async void SaveExecute()
         {
             await Navigation.PopAsync();
-            MessagingCenter.Send(this, "Save", new Item()
+            Messaging.SendSave(this, new Item()
             {
                 Id = Guid.NewGuid().ToString(),
                 Text = this.Text,
