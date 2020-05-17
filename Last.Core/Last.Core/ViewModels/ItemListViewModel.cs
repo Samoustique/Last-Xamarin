@@ -1,16 +1,14 @@
 ﻿using System;
 using System.Windows.Input;
+using Last.Core.Message;
 using Last.Core.Models;
-using Last.Core.Services;
 using Last.Core.Views;
 using Xamarin.Forms;
 
 namespace Last.Core.ViewModels
 {
-    public class ItemListViewModel : BaseViewModel
+    public class ItemListViewModel : BaseViewModel, IItemUpdater
     {
-        private Messaging _messaging;
-
         public Item Item { get; private set; }
 
         public int Count => Item.Count;
@@ -28,9 +26,8 @@ namespace Last.Core.ViewModels
 
         public event Action CountChanged;
 
-        public ItemListViewModel(Item item, INavigation navigation, Services.Messaging messaging)
+        public ItemListViewModel(Item item, INavigation navigation)
         {
-            _messaging = messaging;
             Item = item;
             Navigation = navigation;
             OpenItemDetailCommand = new Command(OpenItemDetailExecute);
@@ -41,12 +38,13 @@ namespace Last.Core.ViewModels
         {
             Item.Count++;
             Item.LastModificationDate = DateTime.Now;
+            MessagingCenter.Send(this as IItemUpdater, string.Empty, new UpdateItemMessage() { Item = Item });
             CountChanged?.Invoke();
         }
 
         private async void OpenItemDetailExecute()
         {
-            var viewModel = new UpdateItemViewModel(Item, _messaging);
+            var viewModel = new UpdateItemViewModel(Item);
             await Navigation.PushAsync(new ItemDetailPage(viewModel));
         }
     }

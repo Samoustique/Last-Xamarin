@@ -1,14 +1,18 @@
-﻿using Last.Core.Models;
-using Last.Core.Services;
+﻿using Last.Core.Message;
+using Last.Core.Models;
 using Xamarin.Forms;
 
 namespace Last.Core.ViewModels
 {
-    public class UpdateItemViewModel : ItemDetailViewModel
+    interface IItemUpdater
+    {
+    }
+
+    public class UpdateItemViewModel : ItemDetailViewModel, IItemUpdater
     {
         public Item Item { get; }
 
-        public UpdateItemViewModel(Item item, Messaging messaging) : base(messaging)
+        public UpdateItemViewModel(Item item)
         {
             MainCommand = new Command(UpdateExecute);
             ButtonTitle = "Update";
@@ -27,7 +31,7 @@ namespace Last.Core.ViewModels
             Item.Description = Description;
             Item.ImagePath = ImagePath;
             await Navigation.PopAsync();
-            Messaging.SendUpdate(this, Item);
+            MessagingCenter.Send(this, string.Empty, new UpdateItemMessage() { Item = Item });
         }
     }
 }

@@ -1,5 +1,4 @@
-﻿using System;
-using Xamarin.Forms;
+﻿using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 using Last.Core.Views;
 using Last.Core.ViewModels;
@@ -15,8 +14,21 @@ namespace Last.Core
         {
             InitializeComponent();
 
-            Messaging messaging = new Messaging();
-            ItemsViewModel itemsViewModel = new ItemsViewModel(messaging);
+            var itemsDataStore = new ItemsDataStore();
+
+            string bbdPath = string.Empty;
+            var alreadyExists = DependencyService.Get<IAppliPathGetterService>()?.GetOrCreateFile(itemsDataStore.BbdFilename, out bbdPath);
+            itemsDataStore.BbdPath = bbdPath;
+            if (alreadyExists ?? false)
+            {
+                itemsDataStore.Deserialize();
+            }
+            else
+            {
+                itemsDataStore.Serialize();
+            }
+
+            ItemsViewModel itemsViewModel = new ItemsViewModel(itemsDataStore);
             MainPage = new NavigationPage(new ItemsPage());
             MainPage.BindingContext = itemsViewModel;
         }

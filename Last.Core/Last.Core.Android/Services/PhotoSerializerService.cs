@@ -2,8 +2,6 @@
 using Last.Core.Services;
 using System;
 using System.IO;
-using System.Runtime.Serialization;
-using System.Runtime.Serialization.Formatters.Binary;
 using Xamarin.Forms;
 
 [assembly: Dependency(typeof(PhotoSerializerService))]
