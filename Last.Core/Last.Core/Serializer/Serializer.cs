@@ -4,30 +4,15 @@ using System.IO;
 using System.Xml;
 using System.Xml.Serialization;
 
-namespace Last.Core.Helpers
+namespace Last.Core.Serializer
 {
-    public sealed class Serializer
+    public class Serializer
     {
-        private static Serializer _instance = null;
-
-        private Serializer()
+        public Serializer()
         {
         }
 
-        public static Serializer Instance
-        {
-            get
-            {
-                if (_instance == null)
-                {
-                    _instance = new Serializer();
-                }
-                return _instance;
-            }
-        }
-
-        // TODO change Items by DataStore<Item>
-        public void Deserialize(string path, out Data items)
+        public void Deserialize(string path, out Data data)
         {
             XmlSerializer serializer = new XmlSerializer(typeof(Data));
             serializer.UnknownNode += new XmlNodeEventHandler(SerializerUnknownNode);
@@ -35,27 +20,21 @@ namespace Last.Core.Helpers
             using (FileStream fs = new FileStream(path, FileMode.Open))
             {
                 XmlReader reader = new XmlTextReader(fs);
-                if (serializer.CanDeserialize(reader))
-                {
-                    items = (Data)serializer.Deserialize(reader);
-                }
-                else
-                {
-                    items = new Data();
-                    // TODO notif data format changed, data lossed. => needs to be fixed!
-                }
+                data = (Data) serializer.Deserialize(reader);
             }
         }
 
-        public void Serialize(string path, Data items)
+        public bool Serialize(string path, Data data)
         {
             XmlSerializer serializer = new XmlSerializer(typeof(Data));
 
             using (TextWriter writer = new StreamWriter(path))
             {
-                serializer.Serialize(writer, items);
+                serializer.Serialize(writer, data);
                 writer.Close();
             }
+
+            return true;
         }
 
         private void SerializerUnknownNode(object sender, XmlNodeEventArgs e)
@@ -69,6 +48,18 @@ namespace Last.Core.Helpers
             // TODO notif?
             System.Xml.XmlAttribute attr = e.Attr;
             Console.WriteLine("Unknown attribute " + attr.Name + "='" + attr.Value + "'");
+        }
+
+        public bool CanDeserialize(string path)
+        {
+            XmlSerializer serializer = new XmlSerializer(typeof(Data));
+            serializer.UnknownNode += new XmlNodeEventHandler(SerializerUnknownNode);
+            serializer.UnknownAttribute += new XmlAttributeEventHandler(SerializerUnknownAttribute);
+            using (FileStream fs = new FileStream(path, FileMode.Open))
+            {
+                XmlReader reader = new XmlTextReader(fs);
+                return serializer.CanDeserialize(reader);
+            }
         }
     }
 }

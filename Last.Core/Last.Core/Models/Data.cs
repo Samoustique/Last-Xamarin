@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Xml.Serialization;
 
@@ -7,6 +8,7 @@ namespace Last.Core.Models
     [XmlRoot(IsNullable = false)]
     public class Data
     {
+        public Version Version;
         public List<Item> Items;
 
         public Data()
