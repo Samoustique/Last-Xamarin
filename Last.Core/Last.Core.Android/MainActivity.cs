@@ -9,7 +9,7 @@ using Last.Core.Services;
 
 namespace Last.Core.Droid
 {
-    [Activity(Label = "Last.Core", Icon = "@mipmap/icon", Theme = "@style/MainTheme", MainLauncher = true, ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation)]
+    [Activity(Label = "Last", Icon = "@mipmap/icon", Theme = "@style/MainTheme", MainLauncher = true, ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation)]
     public class MainActivity : global::Xamarin.Forms.Platform.Android.FormsAppCompatActivity
     {
         protected override void OnCreate(Bundle savedInstanceState)
@@ -26,8 +26,7 @@ namespace Last.Core.Droid
         // Field, property, and method for Picture Picker
         public static readonly int PickImageId = 1000;
         public const int PickImageRequestCode = 1;
-        public const int CameraRequestCode = 2;
-        public const int ExternalStorageRequestCode = 3;
+        public const int CameraStorageRequestCode = 2;
 
         public static MainActivity Instance;
 
@@ -60,34 +59,41 @@ namespace Last.Core.Droid
             switch(requestCode)
             {
                 case PickImageRequestCode:
+                    var iPickImageService = DependencyService.Get<IPhotoPickerService>();
+                    PhotoPickerService pickImageService = iPickImageService as PhotoPickerService;
+
                     if ((grantResults.Length == 1) && (grantResults[0] == Permission.Granted))
                     {
                         // Location permission has been granted, okay to retrieve the location of the device.
-                        DependencyService.Get<PhotoPickerService>().PickPhoto();
+                        pickImageService.PickPhoto();
                     }
                     else
                     {
-                        DependencyService.Get<PhotoPickerService>().RaisePhotoPickedFailed();
+                        pickImageService.RaisePhotoPickedFailed();
                     }
                     break;
-                case CameraRequestCode:
-                    if ((grantResults.Length == 1) && (grantResults[0] == Permission.Granted))
+                case CameraStorageRequestCode:
+                    var iCameraStorageService = DependencyService.Get<IRequestPermissionService>();
+                    RequestPermissionService cameraStorageService = iCameraStorageService as RequestPermissionService;
+
+                    if (grantResults.Length == 2
+                        && grantResults[0] == Permission.Granted)
                     {
-                        DependencyService.Get<RequestPermissionService>().RaiseCameraPermissionSucceded();
+                        cameraStorageService.RaiseCameraPermissionSucceded();
                     }
                     else
                     {
-                        DependencyService.Get<RequestPermissionService>().RaiseCameraPermissionFailed();
+                        cameraStorageService.RaiseCameraPermissionFailed();
                     }
-                    break;
-                case ExternalStorageRequestCode:
-                    if ((grantResults.Length == 1) && (grantResults[0] == Permission.Granted))
+
+                    if (grantResults.Length == 2
+                        && grantResults[1] == Permission.Granted)
                     {
-                        DependencyService.Get<RequestPermissionService>().RaiseWriteExternalStoragePermissionSucceded();
+                        cameraStorageService.RaiseWriteExternalStoragePermissionSucceded();
                     }
                     else
                     {
-                        DependencyService.Get<RequestPermissionService>().RaiseWriteExternalStoragePermissionFailed();
+                        cameraStorageService.RaiseWriteExternalStoragePermissionFailed();
                     }
                     break;
                 default:

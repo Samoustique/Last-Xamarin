@@ -19,19 +19,16 @@ namespace Last.Core.Droid.Services
 
         public bool RequestCameraPermission()
         {
-            if (ContextCompat.CheckSelfPermission(MainActivity.Instance, Manifest.Permission.WriteExternalStorage) != (int)Permission.Granted)
+            bool result = true;
+
+            if (ContextCompat.CheckSelfPermission(MainActivity.Instance, Manifest.Permission.Camera) != (int)Permission.Granted
+                || ContextCompat.CheckSelfPermission(MainActivity.Instance, Manifest.Permission.WriteExternalStorage) != (int)Permission.Granted)
             {
-                ActivityCompat.RequestPermissions(MainActivity.Instance, new String[] { Manifest.Permission.WriteExternalStorage }, MainActivity.ExternalStorageRequestCode);
-                return false;
+                ActivityCompat.RequestPermissions(MainActivity.Instance, new String[] { Manifest.Permission.Camera, Manifest.Permission.WriteExternalStorage }, MainActivity.CameraStorageRequestCode);
+                result = false;
             }
 
-            if (ContextCompat.CheckSelfPermission(MainActivity.Instance, Manifest.Permission.Camera) != (int)Permission.Granted)
-            {
-                ActivityCompat.RequestPermissions(MainActivity.Instance, new String[] { Manifest.Permission.Camera }, MainActivity.CameraRequestCode);
-                return false;
-            }
-
-            return true;
+            return result;
         }
 
         internal void RaiseCameraPermissionSucceded()

@@ -13,6 +13,7 @@ namespace Last.Core.ViewModels
         private ImageSource _image;
         private bool _isCameraPermissionOn = false;
         private bool _isWriteExternalStoragePermissionOn = false;
+        private IRequestPermissionService _requestPermissionService;
 
         public readonly string PictureChoiceCamera = "Take Photo";
         public readonly string PictureChoiceBrowse = "Choose from Gallery";
@@ -21,6 +22,12 @@ namespace Last.Core.ViewModels
         {
             PickPhotoButtonCommand = new Command(PickPhotoButtonExecute);
             DeleteItemCommand = new Command<Item>(DeleteItemExecute, DeleteItemCanExecute);
+
+            _requestPermissionService = DependencyService.Get<IRequestPermissionService>();
+            _requestPermissionService.WriteExternalStoragePermissionFailed += OnWriteExternalStoragePermissionFailed;
+            _requestPermissionService.WriteExternalStoragePermissionSucceded += OnWriteExternalStoragePermissionSucceded;
+            _requestPermissionService.CameraPermissionFailed += OnCameraPermissionFailed;
+            _requestPermissionService.CameraPermissionSucceded += OnCameraPermissionSucceded;
         }
 
         private bool HasPermissionToTakePhoto => _isCameraPermissionOn && _isWriteExternalStoragePermissionOn;
@@ -91,13 +98,7 @@ namespace Last.Core.ViewModels
                 return;
             }
 
-            var requestPermissionService = DependencyService.Get<IRequestPermissionService>();
-            requestPermissionService.WriteExternalStoragePermissionFailed += OnWriteExternalStoragePermissionFailed;
-            requestPermissionService.WriteExternalStoragePermissionSucceded += OnWriteExternalStoragePermissionSucceded;
-            requestPermissionService.CameraPermissionFailed += OnCameraPermissionFailed;
-            requestPermissionService.CameraPermissionSucceded += OnCameraPermissionSucceded;
-
-            if (!requestPermissionService.RequestCameraPermission())
+            if (!_requestPermissionService.RequestCameraPermission())
             {
                 return;
             }
