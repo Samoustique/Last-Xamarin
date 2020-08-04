@@ -41,10 +41,6 @@ namespace Last.Core.Droid.Services
                     Intent.CreateChooser(intent, "Select Picture"),
                     MainActivity.PickImageId);
             }
-            else
-            {
-                RaisePhotoPickedSucceeded();
-            }
         }
 
         public void RaisePhotoPickedSucceeded(Stream stream = null, string filename = null)

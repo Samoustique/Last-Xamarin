@@ -14,6 +14,7 @@ namespace Last.Core.ViewModels
         private bool _isCameraPermissionOn = false;
         private bool _isWriteExternalStoragePermissionOn = false;
         private IRequestPermissionService _requestPermissionService;
+        private IPhotoPickerService _photoPickerService;
 
         public readonly string PictureChoiceCamera = "Take Photo";
         public readonly string PictureChoiceBrowse = "Choose from Gallery";
@@ -28,6 +29,10 @@ namespace Last.Core.ViewModels
             _requestPermissionService.WriteExternalStoragePermissionSucceded += OnWriteExternalStoragePermissionSucceded;
             _requestPermissionService.CameraPermissionFailed += OnCameraPermissionFailed;
             _requestPermissionService.CameraPermissionSucceded += OnCameraPermissionSucceded;
+
+            _photoPickerService = DependencyService.Get<IPhotoPickerService>();
+            _photoPickerService.PhotoPickedSucceeded += OnPhotoPickedSucceeded;
+            _photoPickerService.PhotoPickedFailed += OnPhotoPickedFailed;
         }
 
         private bool HasPermissionToTakePhoto => _isCameraPermissionOn && _isWriteExternalStoragePermissionOn;
@@ -177,14 +182,11 @@ namespace Last.Core.ViewModels
 
         private void BrowsePicture()
         {
-            var photoPickerService = DependencyService.Get<IPhotoPickerService>();
-            SubscribePhotoPicker(photoPickerService);
-            photoPickerService.GetImageStreamAsync();
+            _photoPickerService.GetImageStreamAsync();
         }
 
         private void OnPhotoPickedSucceeded(Stream stream, string filename)
         {
-            UnsubscribePhotoPicker();
             if (stream != null)
             {
                 MemoryStream ms = CopyStreamToMemory(stream);
@@ -209,21 +211,9 @@ namespace Last.Core.ViewModels
 
         private void OnPhotoPickedFailed()
         {
-            UnsubscribePhotoPicker();
             // TODO display message "you need to grant rights"
-         }
-
-        private void SubscribePhotoPicker(IPhotoPickerService photoPickerService)
-        {
-            photoPickerService.PhotoPickedSucceeded += OnPhotoPickedSucceeded;
-            photoPickerService.PhotoPickedFailed += OnPhotoPickedFailed;
-        }
-
-        private void UnsubscribePhotoPicker()
-        {
-            var photoPickerService = DependencyService.Get<IPhotoPickerService>();
-            photoPickerService.PhotoPickedSucceeded -= OnPhotoPickedSucceeded;
-            photoPickerService.PhotoPickedFailed -= OnPhotoPickedFailed;
+            int kk = 0;
+            ++kk;
         }
     }
 }
