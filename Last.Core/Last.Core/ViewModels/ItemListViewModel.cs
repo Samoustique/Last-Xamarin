@@ -35,8 +35,6 @@ namespace Last.Core.ViewModels
         public ICommand IncrementCommand { get; set; }
         public INavigation Navigation { get; internal set; }
 
-        public event Action CountChanged;
-
         public void Clean()
         {
             _updateItemViewModel.Unsubscribe();
@@ -46,8 +44,7 @@ namespace Last.Core.ViewModels
         {
             Item.Count++;
             Item.LastModificationDate = DateTime.Now;
-            MessagingCenter.Send(this as IItemUpdater, string.Empty, new UpdateItemMessage() { Item = Item });
-            CountChanged?.Invoke();
+            MessagingCenter.Send(this as IItemUpdater, string.Empty, new IncrementItemMessage() { Item = Item });
         }
 
         private async void OpenItemDetailExecute()

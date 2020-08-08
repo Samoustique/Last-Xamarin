@@ -30,6 +30,13 @@ namespace Last.Core.ViewModels
                 // Save
                 await _dataStore.AddItemAsync(message.Item);
             });
+            MessagingCenter.Subscribe<IItemUpdater, IncrementItemMessage>(this, string.Empty, async (obj, message) =>
+            {
+                // Update
+                await _dataStore.UpdateItemAsync(message.Item);
+
+                LoadItemsCommand.Execute(null);
+            });
             MessagingCenter.Subscribe<IItemUpdater, UpdateItemMessage>(this, string.Empty, async (obj, message) =>
             {
                 // Update
