@@ -23,16 +23,8 @@ namespace Last.Core.ViewModels
         {
             PickPhotoButtonCommand = new Command(PickPhotoButtonExecute);
             DeleteItemCommand = new Command<Item>(DeleteItemExecute, DeleteItemCanExecute);
-
             _requestPermissionService = DependencyService.Get<IRequestPermissionService>();
-            _requestPermissionService.WriteExternalStoragePermissionFailed += OnWriteExternalStoragePermissionFailed;
-            _requestPermissionService.WriteExternalStoragePermissionSucceded += OnWriteExternalStoragePermissionSucceded;
-            _requestPermissionService.CameraPermissionFailed += OnCameraPermissionFailed;
-            _requestPermissionService.CameraPermissionSucceded += OnCameraPermissionSucceded;
-
             _photoPickerService = DependencyService.Get<IPhotoPickerService>();
-            _photoPickerService.PhotoPickedSucceeded += OnPhotoPickedSucceeded;
-            _photoPickerService.PhotoPickedFailed += OnPhotoPickedFailed;
         }
 
         private bool HasPermissionToTakePhoto => _isCameraPermissionOn && _isWriteExternalStoragePermissionOn;
@@ -57,6 +49,28 @@ namespace Last.Core.ViewModels
         public Command DeleteItemCommand { get; set; }
 
         public event Action PictureChoice;
+
+        public void Subscribe()
+        {
+            _requestPermissionService.WriteExternalStoragePermissionFailed += OnWriteExternalStoragePermissionFailed;
+            _requestPermissionService.WriteExternalStoragePermissionSucceded += OnWriteExternalStoragePermissionSucceded;
+            _requestPermissionService.CameraPermissionFailed += OnCameraPermissionFailed;
+            _requestPermissionService.CameraPermissionSucceded += OnCameraPermissionSucceded;
+
+            _photoPickerService.PhotoPickedSucceeded += OnPhotoPickedSucceeded;
+            _photoPickerService.PhotoPickedFailed += OnPhotoPickedFailed;
+        }
+
+        public void Unsubscribe()
+        {
+            _requestPermissionService.WriteExternalStoragePermissionFailed -= OnWriteExternalStoragePermissionFailed;
+            _requestPermissionService.WriteExternalStoragePermissionSucceded -= OnWriteExternalStoragePermissionSucceded;
+            _requestPermissionService.CameraPermissionFailed -= OnCameraPermissionFailed;
+            _requestPermissionService.CameraPermissionSucceded -= OnCameraPermissionSucceded;
+
+            _photoPickerService.PhotoPickedSucceeded -= OnPhotoPickedSucceeded;
+            _photoPickerService.PhotoPickedFailed -= OnPhotoPickedFailed;
+        }
 
         protected bool DeleteItemCanExecute(Item item)
         {

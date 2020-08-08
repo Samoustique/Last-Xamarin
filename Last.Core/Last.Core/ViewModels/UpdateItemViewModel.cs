@@ -31,7 +31,7 @@ namespace Last.Core.ViewModels
             Item.Description = Description;
             Item.ImagePath = ImagePath;
             await Navigation.PopAsync();
-            MessagingCenter.Send(this, string.Empty, new UpdateItemMessage() { Item = Item });
+            MessagingCenter.Send(this as IItemUpdater, string.Empty, new UpdateItemMessage() { Item = Item });
         }
     }
 }

@@ -17,11 +17,7 @@ namespace Last.Core.Views
             base.OnAppearing();
 
             (BindingContext as ItemsViewModel).Navigation = Navigation;
-
-            if ((BindingContext as ItemsViewModel).Items.Count == 0)
-            {
-                (BindingContext as ItemsViewModel).LoadItemsCommand.Execute(null);
-            }
+            (BindingContext as ItemsViewModel).LoadItemsCommand.Execute(null);
         }
     }
 }

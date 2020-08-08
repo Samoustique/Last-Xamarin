@@ -9,6 +9,17 @@ namespace Last.Core.ViewModels
 {
     public class ItemListViewModel : BaseViewModel, IItemUpdater
     {
+        private UpdateItemViewModel _updateItemViewModel;
+
+        public ItemListViewModel(Item item, INavigation navigation)
+        {
+            Item = item;
+            Navigation = navigation;
+            _updateItemViewModel = new UpdateItemViewModel(Item);
+            OpenItemDetailCommand = new Command(OpenItemDetailExecute);
+            IncrementCommand = new Command(IncrementExecute);
+        }
+
         public Item Item { get; private set; }
 
         public int Count => Item.Count;
@@ -26,12 +37,9 @@ namespace Last.Core.ViewModels
 
         public event Action CountChanged;
 
-        public ItemListViewModel(Item item, INavigation navigation)
+        public void Clean()
         {
-            Item = item;
-            Navigation = navigation;
-            OpenItemDetailCommand = new Command(OpenItemDetailExecute);
-            IncrementCommand = new Command(IncrementExecute);
+            _updateItemViewModel.Unsubscribe();
         }
 
         public void IncrementExecute()
@@ -44,8 +52,8 @@ namespace Last.Core.ViewModels
 
         private async void OpenItemDetailExecute()
         {
-            var viewModel = new UpdateItemViewModel(Item);
-            await Navigation.PushAsync(new ItemDetailPage(viewModel));
+            _updateItemViewModel.Subscribe();
+            await Navigation.PushAsync(new ItemDetailPage(_updateItemViewModel));
         }
     }
 }
